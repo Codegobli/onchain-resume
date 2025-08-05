@@ -1,66 +1,89 @@
-## Foundry
+# 🧾 Onchain Resume
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A verifiable, onchain CV designed for builders in web3.  
+Not just wallet history — this is proof of work, endorsements, and experience all logged onchain.
 
-Foundry consists of:
+Whether you're deep in DAOs, contributing to protocols, or shipping solo — your work deserves to be **recorded, endorsed, and owned by you.**
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+---
 
-## Documentation
+## 🚀 Features
 
-https://book.getfoundry.sh/
+- `addExperience()`: Add your onchain work history (title, org, description, start/end date)
+- `endorse()`: Get skill endorsements from other builders holding a trust badge NFT
+- `getRecentEndorsements()`: Fetch the latest 5 endorsements you’ve received
+- `Soulbound-style rep tracking` — **1 star = 1 real endorsement**
 
-## Usage
+---
 
-### Build
+## 💡 Why?
 
-```shell
-$ forge build
-```
+Your GitHub might be buried.  
+Farcaster posts get lost.  
+DAO proposals are scattered.
 
-### Test
+There’s no unified place that says:
 
-```shell
-$ forge test
-```
+> “This person ships. This person is trusted.”
 
-### Format
+So I built one — **onchain.**
 
-```shell
-$ forge fmt
-```
+---
 
-### Gas Snapshots
+## 🔨 Contract Functions
 
-```shell
-$ forge snapshot
-```
+### ✅ `addExperience(string role, string company, string desc, uint startDate, uint endDate)`
+Log your experience — works like a resume line item.
 
-### Anvil
+### ✅ `endorse(address user)`
+Send someone a reputation "star" — only possible if you're holding a valid TrustBadgeNFT and haven’t endorsed that user before.
 
-```shell
-$ anvil
-```
+### ✅ `getRecentEndorsements(address user) → Endorsement[]`
+Returns the **latest 5 endorsements** for a user, ordered from oldest to newest (most recent at end of array).
 
-### Deploy
+---
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+## 🌐 Potential Use Cases
 
-### Cast
+- DAO-native resumes
+- Skill-based trust scores
+- Verifiable builder profiles
+- Identity legos for rep systems or zk-based attestations
+- Onchain team formation
 
-```shell
-$ cast <subcommand>
-```
+---
 
-### Help
+## ⚙️ Stack
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- 💻 [Foundry](https://book.getfoundry.sh/) – testing & development
+- 🔐 Solidity ^0.8.20
+- 🔲 NFT-based endorsement via `TrustBadgeNFT`
+
+---
+
+## 🧪 Local Testing
+
+```bash
+forge build
+forge test
+
+
+🌱 Roadmap Ideas
+
+Frontend integration (Farcaster/Frames?)
+
+More modular resume components
+
+Trust-weighted endorsements
+
+ZK-compatible attestations
+
+DAO/org-specific resume views
+
+
+👨‍🚀 Author
+Built with love (and curiosity) by a solo builder exploring onchain identity.
+Still just a hobby, but who knows where it goes.
+
+📄 License
+MIT – free to fork, remix, build on.
