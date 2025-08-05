@@ -14,11 +14,13 @@ constructor (address _nftAddress){
 BadgeNFT = TrustBadgeNFT (_nftAddress);
 }
 
+// This is for inputing experience
 struct Experience {
-
-string title;
-uint32 timestamp;
-
+    string company;
+    string role;
+    string description;
+    uint256 startDate; // <-- User provides it
+    uint256 endDate;   // Optional
 }
 
 //Tracks if an endorser has already endorsed a user
@@ -32,10 +34,13 @@ mapping (address => uint) public reputation;
 
 event Endorsed(address sender, address recipient, bool success);
 
-function addExperience ( string calldata _title) external {
+function addExperience (string calldata _role, string calldata _company, string calldata _description, uint _startDate, uint _endDate) external {
     experiencetracker[msg.sender] .push (Experience ({
-        title: _title,
-        timestamp: uint32(block.timestamp)
+    company: _company,
+    role: _role,
+    description: _description,
+    startDate: _startDate,
+    endDate: _endDate
     }));
 }
 
