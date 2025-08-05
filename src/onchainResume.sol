@@ -14,7 +14,7 @@ constructor (address _nftAddress){
 BadgeNFT = TrustBadgeNFT (_nftAddress);
 }
 
-// This is for inputing experience
+// This is for inputing experience for the resume holder
 struct Experience {
     string company;
     string role;
@@ -22,6 +22,13 @@ struct Experience {
     uint256 startDate; // <-- User provides it
     uint256 endDate;   // Optional
 }
+
+struct Endorsement {
+    address endorser;
+    uint32 timestamp;
+}
+
+mapping(address => Endorsement[]) public endorsementsReceived;
 
 //Tracks if an endorser has already endorsed a user
 mapping (address => mapping (address => bool)) public hasEndorsed;
@@ -49,12 +56,40 @@ function endorse (address _recipient) public {
     if (hasEndorsed[msg.sender][_recipient]) revert AlreadyEndorsed ();
 
     hasEndorsed[msg.sender][_recipient] = true;
+
+    endorsementsReceived[_recipient].push(
+    Endorsement({
+        endorser: msg.sender,
+        timestamp: uint32(block.timestamp)
+    })
+);
+
     reputation[_recipient] += 1;
 
     emit Endorsed (msg.sender, _recipient, true);
 
 
 }
+
+function getRecentEndorsements(address _user) public view returns (Endorsement[] memory) {
+    Endorsement[] memory allEndorsements = endorsementsReceived[_user];
+    uint len = allEndorsements.length;
+    
+    uint count;
+if (len > 5) {
+    count = 5;
+} else {
+    count = len;
+}
+
+ Endorsement[] memory recentEndorsements = new Endorsement[](count);
+    for (uint i = 0; i < count; i++) {
+        recentEndorsements[i] = allEndorsements[len - count + i];
+    }
+
+    return recentEndorsements;
+}
+
 
 }
  
