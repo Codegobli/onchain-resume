@@ -25,7 +25,7 @@ struct Experience {
 
 struct Endorsement {
     address endorser;
-    uint32 timestamp;
+    uint64 timestamp;
 }
 
 mapping(address => Endorsement[]) public endorsementsReceived;
@@ -40,15 +40,22 @@ mapping (address => Experience[]) public experiencetracker;
 mapping (address => uint) public reputation;
 
 event Endorsed(address sender, address recipient, bool success);
+event experienceAdded(string role);
 
 function addExperience (string calldata _role, string calldata _company, string calldata _description, uint _startDate, uint _endDate) external {
-    experiencetracker[msg.sender] .push (Experience ({
+require (bytes(_role).length <= 64, "Role too long");
+require (bytes (_company).length <= 64, "Company details too long");
+require (bytes ( _description).length <= 256, "Description too long");
+
+experiencetracker[msg.sender] .push (Experience ({
     company: _company,
     role: _role,
     description: _description,
     startDate: _startDate,
     endDate: _endDate
     }));
+
+    emit experienceAdded (_role);
 }
 
 function endorse (address _recipient) public {
@@ -60,7 +67,7 @@ function endorse (address _recipient) public {
     endorsementsReceived[_recipient].push(
     Endorsement({
         endorser: msg.sender,
-        timestamp: uint32(block.timestamp)
+        timestamp: uint64(block.timestamp)
     })
 );
 
@@ -71,16 +78,36 @@ function endorse (address _recipient) public {
 
 }
 
+function getRecentExperience (address _user) public view  returns (Experience[] memory) {
+    Experience[] memory  allExperience = experiencetracker[_user];
+    uint len = allExperience.length;
+
+    uint count;
+    if (len > 3){
+        count = 3;
+    } else {
+        count = len;
+    }
+
+    Experience[] memory recentExperiences = new Experience[](count);
+    for (uint i = 0; i < count; i++){
+        recentExperiences[i] = allExperience[len-count+i];
+    }
+    return recentExperiences;
+}
+
+ 
+
 function getRecentEndorsements(address _user) public view returns (Endorsement[] memory) {
     Endorsement[] memory allEndorsements = endorsementsReceived[_user];
     uint len = allEndorsements.length;
     
     uint count;
-if (len > 5) {
-    count = 5;
-} else {
-    count = len;
-}
+      if (len > 5) {
+            count = 5;
+            } else {
+      count = len;
+    }
 
  Endorsement[] memory recentEndorsements = new Endorsement[](count);
     for (uint i = 0; i < count; i++) {
